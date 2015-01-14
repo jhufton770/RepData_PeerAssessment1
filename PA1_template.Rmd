@@ -1,25 +1,207 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "Project1"
+output: html_document
 ---
 
+#Reproducible Research Project1
 
-## Loading and preprocessing the data
+```{r}
+#Set the working directory and load necessary libararies
+setwd("/Volumes/DiskStation1/jhufton/MyDownload/Coursera/DataScientistsToolbox/ReproducableResearch/CourseProject1/RepData_PeerAssessment1")
+library(plyr)
+library(ggplot2)
+library(lubridate)
 
+#Read in the data set, set NA values to 0
+activity.raw <- read.csv("./activity.csv", header=TRUE)
+activity <- activity.raw
+activity[is.na(activity)] <- 0
+#Aggregate the steps for each interval in a day to a daily number of total 
+#steps for each day
+daily.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                         sum(steps, na.rm = TRUE))
+```
 
+##Histogram of Steps Taken by Day
+Below is a histogram showing the number of steps taken for each day in the 
+dataset.  
 
-## What is mean total number of steps taken per day?
+Note that there are eight days in the dataset for which there is no
+step data.  For these days, the missing values in the original data were
+substitued with the value 0.  These eight days can be identified as days for 
+which there is no value shown in the histogram below.
+```{r}
+#Plot the total 
+ggplot(daily.steps, aes(x=date, y=daily_steps)) + geom_bar(stat="identity") + 
+    theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
+    ylab("Count of Daily Steps") + xlab("Date")
+```
 
+##Calculation of Mean and Median Daily Steps
 
+###Mean Daily Steps
+The mean number of steps per interval across each day, for all days in the dataset,
+is computed and the results (in tabular format) are shown below.
 
-## What is the average daily activity pattern?
+Note that the eight days with missing data have a mean number of steps of 0.
 
+```{r}
+mean.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                        mean(steps, na.rm = TRUE))
+mean.steps[is.na(mean.steps)] <- 0
+names(mean.steps) <- c("Date", "MeanSteps")
+mean.steps
+```
 
+###Median Daily Steps
+The median number of steps per interval across each day, for all days 
+in the data set, is computed and the results (in tabular format) are shown below 
+(this is a per day calculation).  
 
-## Imputing missing values
+Note that since the number of steps for most individual intervals in the is zero, 
+the median number of steps calculated across the intervals for each day is also 0.
+```{r}
+median.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                          median(steps, na.rm = TRUE))
+median.steps[is.na(median.steps)] <- 0
+names(median.steps) <- c("Date", "MedianSteps")
+median.steps
+```
 
+###Average Daily Activity Patterm
+Below is a graph showing the average number of steps for each interval of the day 
+(computed as an average number of steps across corresponding intervals for all
+days in the data set).
 
+```{r}
+average.interval.steps <- ddply(activity, .(interval), summarize, 
+                                avg_steps = mean(steps, na.rm = TRUE))
+ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
+    geom_line(stat="identity") + 
+    theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
+    ylab("Average Steps by Daily Interval") + xlab("Interval")
+```
 
-## Are there differences in activity patterns between weekdays and weekends?
+The maximum average number of steps per interval and the daily interval where 
+the maximum occurs is:
+
+```{r}
+average.interval.steps[average.interval.steps$avg_steps == 
+                           max(average.interval.steps$avg_steps),]
+
+```
+
+Since the interval column counts in 5 minute increments, and the value 100 
+corresponds to 60 minutes, the interval 835 corresponds to 8 hours and 35 
+minutes into the day, or 8:35AM.
+
+###Imputing Missing Values
+
+####Number of Missing Values in the Raw Dataset
+The number of intervals with NA values for the number of steps is:
+```{r}
+nrow(activity.raw[is.na(activity.raw$steps), ])
+```
+From observation of the numbers of steps per day in the first graph (Histogram 
+of Steps Taken by Day), we can see that these missing values correspond to the 8 
+full days of missing step values in the dataset.  
+
+Inspection of the data for the mean number of daily steps shows these days as 
+having 0 average steps.  That the missing values are for 8 full days of data 
+can also be confirmed by inspecting the raw data file as well.
+
+Days with NA values for step data are:
+
+    *   2012-10-01
+    *   2012-10-08
+    *   2012-11-01
+    *   2012-11-04
+    *   2012-11-09
+    *   2012-11-10
+    *   2012-11-14
+    *   2012-11-30
+
+Since we have calculated an average number of steps by interval using all the 
+available daily data in the dataset, we can impute (i.e. replace) the missing 
+daily data with that calculated daily average data and recompute the mean and 
+median figures for each day by interval.
+
+```{r}
+#Replace the missing step data for the days that have no data in the original
+#dataset
+dates <- c("2012-10-01", "2012-10-08", "2012-11-01", "2012-11-04", "2012-11-09", 
+           "2012-11-10", "2012-11-14", "2012-11-30")
+for (d in dates) { 
+    activity[activity$date == d, 1] <- average.interval.steps[ ,2]
+}
+```
+We now re-calculate the mean and median steps for each day in the dataset, this
+time including the imputed data for the eight days missing data in the original
+dataset.
+
+###Mean Daily Steps with Imputed Missing Values
+Using the modified data set with imputed missing values we compute the mean 
+number of steps per interval across each day for all days in the data set
+(this is a per day calculation).
+```{r}
+mean.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                        mean(steps, na.rm = TRUE))
+mean.steps[is.na(mean.steps)] <- 0
+names(mean.steps) <- c("Date", "MeanSteps")
+mean.steps
+```
+
+###Median Daily Steps with Imputed Missing Values
+Using the modified data set with imputed missing values we compute the median 
+number of steps per interval across each day for all days in the data set (this 
+is a per day calculation).  Note that since the number of steps for most 
+individual intervals in the is zero, the median number of steps calculated 
+across the intervals for most days is also 0.  But, for those days for which
+the average daily data was used, the calculation shows a median number of steps
+of 29.63934.
+```{r}
+#Create a data frame with the median daily steps from the activity data
+#with the imputed data replacing missing data in the oringal dataset
+median.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                          median(steps, na.rm = TRUE))
+median.steps[is.na(median.steps)] <- 0
+names(median.steps) <- c("Date", "MedianSteps")
+median.steps
+```
+
+###Weekday vs. Weekend Comparison
+The next set of graphs shows a comparison of the average number of steps by 
+daily interval between weekdays and weekend days.
+
+The weekday figure closely resembles the first graph (Histogram of Steps Taken 
+by Day) for the full daily average which encompassed both weekend days and 
+weekdays, while the weekend figure shows activity spread more evenly through 
+out the day.  
+```{r}
+#Add a new column showing whether the date is a weekday or weekend day
+activity$DoW <- 
+    with(activity, ifelse(weekdays(as.POSIXct(date)) == "Monday", "weekday",
+                   ifelse(weekdays(as.POSIXct(date)) == "Tuesday", "weekday",
+                   ifelse(weekdays(as.POSIXct(date)) == "Wednesday", "weekday",
+                   ifelse(weekdays(as.POSIXct(date)) == "Thursday", "weekday",
+                   ifelse(weekdays(as.POSIXct(date)) == "Friday", "weekday",
+                   ifelse(weekdays(as.POSIXct(date)) == "Saturday", "weekend", 
+                   "weekend")))))) )
+
+#Convert the DoW column to a factor
+activity$DoW <- as.factor(activity$DoW)
+
+#Recalculate the average daily interval steps data frame using the modified 
+#activity information
+average.interval.steps <- ddply(activity, .(interval, DoW), summarize, 
+                                avg_steps = mean(steps, na.rm = TRUE))
+
+#Create a two pannel plot showing average steps per daily interval for 
+#weekdays and weekend days
+ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
+    geom_line(stat="identity") + 
+    theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
+    ylab("Average Steps by Daily Interval") + xlab("Interval") + 
+    facet_wrap(~DoW, ncol=1)
+```
+
