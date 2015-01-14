@@ -196,7 +196,7 @@ activity$DoW <- as.factor(activity$DoW)
 average.interval.steps <- ddply(activity, .(interval, DoW), summarize, 
                                 avg_steps = mean(steps, na.rm = TRUE))
 
-#Create a two pannel plot showing average steps per daily interval for 
+#Create a two panel plot showing average steps per daily interval for 
 #weekdays and weekend days
 ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
     geom_line(stat="identity") + 
