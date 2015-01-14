@@ -17,10 +17,6 @@ library(lubridate)
 activity.raw <- read.csv("./activity.csv", header=TRUE)
 activity <- activity.raw
 activity[is.na(activity)] <- 0
-#Aggregate the steps for each interval in a day to a daily number of total 
-#steps for each day
-daily.steps <- ddply(activity, .(date), summarize, daily_steps = 
-                         sum(steps, na.rm = TRUE))
 ```
 
 ##Histogram of Steps Taken by Day
@@ -33,9 +29,13 @@ substitued with the value 0.  These eight days can be identified as days for
 which there is no value shown in the histogram below.
 
 ```r
+#Aggregate the steps for each interval in a day to a daily number of total 
+#steps for each day
+daily.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                         sum(steps, na.rm = TRUE))
 #Plot the total 
 ggplot(daily.steps, aes(x=date, y=daily_steps)) + geom_bar(stat="identity") + 
-    theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
+    theme(axis.text.x = element_text(angle = 90, size = rel(0.65))) + 
     ylab("Count of Daily Steps") + xlab("Date")
 ```
 
@@ -285,6 +285,24 @@ for (d in dates) {
     activity[activity$date == d, 1] <- average.interval.steps[ ,2]
 }
 ```
+###Histogram of Steps Taken by Day Using Imputed Data
+Below is a histogram showing the number of steps taken for each day in the 
+dataset, now using the imputed data added in the preceding step.  
+
+
+```r
+#Aggregate the steps for each interval in a day to a daily number of total 
+#steps for each day
+daily.steps <- ddply(activity, .(date), summarize, daily_steps = 
+                         sum(steps, na.rm = TRUE))
+#Plot the total 
+ggplot(daily.steps, aes(x=date, y=daily_steps)) + geom_bar(stat="identity") + 
+    theme(axis.text.x = element_text(angle = 90, size = rel(0.65))) + 
+    ylab("Count of Daily Steps") + xlab("Date")
+```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+
 We now re-calculate the mean and median steps for each day in the dataset, this
 time including the imputed data for the eight days missing data in the original
 dataset.
@@ -488,5 +506,5 @@ ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) +
     facet_wrap(~DoW, ncol=1)
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
 
