@@ -273,6 +273,6 @@ ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) +
 The weekday figure above closely resembles the first graph (Histogram of Steps Taken 
 by Day) for the full daily average which encompassed both weekend days and 
 weekdays. The weekend (only) figure immediately above shows activity spread more 
-evenly through out the day which might be explained by less seditary work-related 
+evenly through out the day which might be explained by less sedintary work-related 
 time during the weekend.  
 
