@@ -1,7 +1,4 @@
----
-title: "Project1"
-output: word_document
----
+# Project1
 
 #Reproducible Research Project1
 
@@ -12,6 +9,18 @@ setwd("/Volumes/DiskStation1/jhufton/MyDownload/Coursera/DataScientistsToolbox/R
 library(plyr)
 library(ggplot2)
 library(lubridate)
+```
+
+```
+## 
+## Attaching package: 'lubridate'
+## 
+## The following object is masked from 'package:plyr':
+## 
+##     here
+```
+
+```r
 library(xtable)
 
 #Read in the data set, set NA values to 0
@@ -37,7 +46,7 @@ max_daily_steps <- as.integer(max(daily.steps$daily_steps))
 hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", xlab="Total Daily Steps")
 ```
 
-![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 Note that there are eight days in the dataset for which there is no
 step data, and two days with near zero number of steps.  This results in a large number of days for which there is a 0
@@ -52,26 +61,22 @@ agrees with the frequency counts at 20,000 steps or more in the histogram.
 
 ```r
 mean_daily_steps <- as.integer(mean(daily.steps$daily_steps))
-#NOTE: This value appears in-line in the text below using `r mean_daily_steps`
-# see footnote
+#NOTE: This value appears in-line in the text below using the 
+#`r mean_daily_steps` syntax
 ```
 Using the sum of daily steps data calculated in the previous section, we find the
-mean number of daily steps is 9354 [^1].
-
-[^1]: Note this value is computed and displayed in-line using the \'r mean_daily_steps\' syntax.
+mean number of daily steps is 9354.
 
 ###Median Daily Steps
 
 
 ```r
 median_daily_steps <- as.integer(median(daily.steps$daily_steps))
-#NOTE: This value appears in-line in the text below using `r median_daily_steps`
-# see footnote
+#NOTE: This value appears in-line in the text below using the 
+#`r median_daily_steps` syntax
 ```
 Using the sum of daily steps data calculated in the previous section, we find the
-median number of daily steps is 10395 [^2].
-
-[^2]: Note this value is computed and displayed in-line using the \'r median_daily_steps\' syntax.
+median number of daily steps is 10395.
 
 ###Average Daily Activity Patterm
 Below is a graph showing the average number of steps for each interval of the day 
@@ -88,7 +93,7 @@ ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) +
     ylab("Average Steps by Daily Interval") + xlab("Interval")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 The maximum average number of steps per interval and the daily interval where 
 the maximum occurs is:
@@ -115,14 +120,12 @@ minutes into the day, or 8:35AM.
 
 ```r
 missing_values <- nrow(activity.raw[is.na(activity.raw$steps), ])
-#NOTE: This value appears in-line in the text below using `r missing_value`
-# see footnote
+#NOTE: This value appears in-line in the text below using the 
+#`r missing_values` syntax
 ```
 
 The number of intervals in the orginal data set with missing values is 
-2304 [^3].
-
-[^3]: Note this value is computed and displayed in-line using the \'r missing_values\' syntax.
+2304.
 
 From observation of the numbers of steps per day in the first graph (Histogram 
 of Steps Taken by Day), we can see that these missing values correspond to the 8 
@@ -174,7 +177,14 @@ max_imputed_daily_steps <- as.integer(max(daily.steps$daily_steps))
 hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", xlab="Total Daily Steps")
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
+
+Note that the main differences between this histogram and the original one shown
+at the begining of this document are the frequence counts of days with 0 or near 
+0 steps (reduced by the 8 days the imputed values were substitued for the original
+0 step counts) and the frequency count of days to the left of the 10,000 count
+level at the center of the histogram.  That frequency count (for the later change) 
+was increased by the 8 days for which the imputed values were used.
 
 We now re-calculate the mean and median steps for each day in the dataset, this
 time including the imputed data for the eight days missing data in the original
@@ -191,19 +201,15 @@ or more in the histogram.
 
 ```r
 mean_imputed_daily_steps <- as.integer(mean(daily.steps$daily_steps))
-#NOTE: This value appears in-line in the text below using `r mean_imputed_daily_steps`
-# see footnote
+#NOTE: This value appears in-line in the text below using the 
+#`r mean_imputed_daily_steps` syntax
 ```
 Using the sum of daily steps data calculated in the previous section which now
 includes the imputed data substitued for the days originally without data, we 
-find the mean number of daily steps is 10581[^4].
+find the mean number of daily steps is 10581.
 
-[^4]: Note this value is computed and displayed in-line using the \'r mean_imputed_daily_steps\' syntax.
-
-This compares to a mean number of daily steps of 9354[^5] before 
+This compares to a mean number of daily steps of 9354 before 
 the imputed data was used to replace the missing data in the original data set.
-
-[^5]: Note this value is computed and displayed in-line using the \'r mean_daily_steps\' syntax.
 
 ###Median Daily Steps with Imputed Missing Values
 
@@ -212,19 +218,15 @@ the imputed data was used to replace the missing data in the original data set.
 #Create a data frame with the median daily steps from the activity data
 #with the imputed data replacing missing data in the oringal dataset
 median_imputed_daily_steps <- as.integer(median(daily.steps$daily_steps))
-#NOTE: This value appears in-line in the text below using `r median_imputed_daily_steps`
-# see footnote
+#NOTE: This value appears in-line in the text below using the 
+#`r median_imputed_daily_steps` syntax
 ```
 Using the sum of daily steps data calculated in the previous section which now
 includes the imputed data substitued for the days originally without data, we 
-find the median number of daily steps is 10395[^6].
+find the median number of daily steps is 10395.
 
-[^6]: Note this value is computed and displayed in-line using the \'r median_imputed_daily_steps\' syntax.
-
-This compares to a median number of daily steps of 10395 [^7] 
+This compares to a median number of daily steps of 10395 
 before the imputed data was used to replace the missing data in the original data set.
-
-[^7]: Note this value is computed and displayed in-line using the \'r median_daily_steps\' syntax.
 
 ###Weekday vs. Weekend Comparison
 The next set of graphs shows a comparison of the average number of steps by 
@@ -263,7 +265,6 @@ ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) +
     facet_wrap(~DoW, ncol=1)
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
-####Footnotes:
 
