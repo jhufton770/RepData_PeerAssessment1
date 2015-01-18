@@ -91,12 +91,13 @@ average.interval.steps <- ddply(activity, .(interval), summarize,
 ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
     geom_line(stat="identity") + 
     theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
-    ylab("Average Steps by Daily Interval") + xlab("Interval") +
+    ylab("Steps") + xlab("Interval") +
     ggtitle("Average Steps by Daily Interval")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
+####Maximum Average Number of Steps in an Interval
 The maximum average number of steps per interval and the daily interval where 
 the maximum occurs is:
 
@@ -262,7 +263,7 @@ average.interval.steps <- ddply(activity, .(interval, dow), summarize,
 ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
     geom_line(stat="identity") + 
     theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
-    ylab("Average Steps by Daily Interval") + xlab("Interval") + 
+    ylab("Steps") + xlab("Interval") + 
     ggtitle("Average Steps by Daily Interval") +
     facet_wrap(~dow, ncol=1)
 ```
