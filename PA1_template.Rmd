@@ -77,7 +77,8 @@ average.interval.steps <- ddply(activity, .(interval), summarize,
 ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) + 
     geom_line(stat="identity") + 
     theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
-    ylab("Average Steps by Daily Interval") + xlab("Interval")
+    ylab("Average Steps by Daily Interval") + xlab("Interval") +
+    ggtitle("Average Steps by Daily Interval")
 ```
 
 The maximum average number of steps per interval and the daily interval where 
@@ -159,7 +160,7 @@ hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps",
 
 Note that the main differences between this histogram and the original one shown
 at the begining of this document are the frequence counts of days with 0 or near 
-0 steps (reduced by the 8 days the imputed values were substitued for the original
+0 steps (reduced by the 8 days for which the imputed values were substitued for the original
 0 step counts) and the frequency count of days to the left of the 10,000 count
 level at the center of the histogram.  That frequency count (for the later change) 
 was increased by the 8 days for which the imputed values were used.
@@ -208,13 +209,9 @@ before the imputed data was used to replace the missing data in the original dat
 The next set of graphs shows a comparison of the average number of steps by 
 daily interval between weekdays and weekend days.
 
-The weekday figure closely resembles the first graph (Histogram of Steps Taken 
-by Day) for the full daily average which encompassed both weekend days and 
-weekdays, while the weekend figure shows activity spread more evenly through 
-out the day.  
 ```{r}
 #Add a new column showing whether the date is a weekday or weekend day
-activity$DoW <- 
+activity$dow <- 
     with(activity, ifelse(weekdays(as.POSIXct(date)) == "Monday", "weekday",
                    ifelse(weekdays(as.POSIXct(date)) == "Tuesday", "weekday",
                    ifelse(weekdays(as.POSIXct(date)) == "Wednesday", "weekday",
@@ -224,11 +221,11 @@ activity$DoW <-
                    "weekend")))))) )
 
 #Convert the DoW column to a factor
-activity$DoW <- as.factor(activity$DoW)
+activity$dow <- as.factor(activity$dow)
 
 #Recalculate the average daily interval steps data frame using the modified 
 #activity information
-average.interval.steps <- ddply(activity, .(interval, DoW), summarize, 
+average.interval.steps <- ddply(activity, .(interval, dow), summarize, 
                                 avg_steps = mean(steps, na.rm = TRUE))
 
 #Create a two panel plot showing average steps per daily interval for 
@@ -237,7 +234,13 @@ ggplot(average.interval.steps, aes(x=interval, y=avg_steps)) +
     geom_line(stat="identity") + 
     theme(axis.text.x = element_text(angle = 90, size = rel(0.75))) + 
     ylab("Average Steps by Daily Interval") + xlab("Interval") + 
-    facet_wrap(~DoW, ncol=1)
+    ggtitle("Average Steps by Daily Interval") +
+    facet_wrap(~dow, ncol=1)
 ```
 
+The weekday figure above closely resembles the first graph (Histogram of Steps Taken 
+by Day) for the full daily average which encompassed both weekend days and 
+weekdays. The weekend (only) figure immediately above shows activity spread more 
+evenly through out the day which might be explained by less seditary work-related 
+time during the weekend.  
 
