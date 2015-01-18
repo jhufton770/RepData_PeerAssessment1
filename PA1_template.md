@@ -43,16 +43,17 @@ daily.steps <- ddply(activity, .(date), summarize, daily_steps =
 max_daily_steps <- as.integer(max(daily.steps$daily_steps))
 
 #Plot a histogram of daily steps
-hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", xlab="Total Daily Steps")
+hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", 
+     xlab="Total Daily Steps", ylab="Days(Frequency)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 Note that there are eight days in the dataset for which there is no
-step data, and two days with near zero number of steps.  This results in a large number of days for which there is a 0
-or near 0 number of steps.  In this data set the maximum sum of daily steps is 
-21194 (note this value is computed and displayed in-line), which 
-agrees with the frequency counts at 20,000 steps or more in the histogram.
+step data, and two days with near zero number of steps.  This results in a large 
+number of days for which there is a 0 or near 0 number of steps.  In this data 
+set the maximum sum of daily steps is 21194, which 
+agrees with the frequency counts (e.g.Days) at 20,000 steps or more in the histogram.
 
 ##Calculation of Mean and Median Daily Steps
 
@@ -172,9 +173,12 @@ dataset, now using the imputed data added in the preceding step.
 daily.steps <- ddply(activity, .(date), summarize, daily_steps = 
                          sum(steps, na.rm = TRUE))
 max_imputed_daily_steps <- as.integer(max(daily.steps$daily_steps))
+#NOTE: This value appears in-line in the text below using the 
+#`r max_imputed_daily_steps` syntax
 
 #Plot the total 
-hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", xlab="Total Daily Steps")
+hist(daily.steps$daily_steps, breaks=25, main="Histogram of Total Daily Steps", 
+     xlab="Total Daily Steps", ylab="Days(Frequency)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
@@ -186,15 +190,15 @@ at the begining of this document are the frequence counts of days with 0 or near
 level at the center of the histogram.  That frequency count (for the later change) 
 was increased by the 8 days for which the imputed values were used.
 
+Note that there remain two days with near zero number of steps.  This results in 
+two days for which there is a near 0 number of steps appearing the histogram 
+above.  In this data set the maximum sum of daily steps is 21194, 
+which agrees with the frequency counts (e.g. Days) at 20,000 steps or more in 
+the histogram.
+
 We now re-calculate the mean and median steps for each day in the dataset, this
 time including the imputed data for the eight days missing data in the original
 dataset.
-
-Note that there remain two days with near zero number of steps.  This results in 
-two days for which there is a near 0 number of steps.  In this data set the 
-maximum sum of daily steps is 21194 (note this value is computed
-and displayed in-line), which agrees with the frequency counts at 20,000 steps 
-or more in the histogram.
 
 ###Mean Daily Steps with Imputed Missing Values
 
